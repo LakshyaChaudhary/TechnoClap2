@@ -9,12 +9,10 @@ const exphbs = require('express-handlebars');
 const users = require('./routes/users');
 const bodyParser = require('body-parser');
 const technician = require('./routes/technician');
-const {jsonFormat} = require('./helpers/hbs');
+
 const app = express();
 app.use(express.static(path.join(__dirname,'public')));
-app.engine('handlebars', exphbs({ helpers:{
- jsonFormat:jsonFormat
-},defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());

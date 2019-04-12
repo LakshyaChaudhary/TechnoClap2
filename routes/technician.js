@@ -80,19 +80,20 @@ router.get('/registertechnician',(req,res)=>{
       if(err){throw err;}
       console.log(user);
       if(user.length === 0){
-        return done(null,false,{message:"No User Found"})
-      }
+        req.flash('success_msg','No use found');      res.redirect('/technician/logintechnician')
+      } else {
       bcrypt.compare(password,user[0].password,(err,isMatch) => {
         if(err) throw err;
         if(isMatch){
           res.render('home/welcometechnician',{
-            log:false,
-            user:user[0].username
+            id: user[0].id,
+            username: user[0].username
           })
         } else {
-          return done(null,false,{message:"Password Incorrect"})
+          req.flash('success_msg','Incorrect Password');      res.redirect('/technician/logintechnician')
         }
       })
+    }
   })
         
   //  passport.authenticate('local',{

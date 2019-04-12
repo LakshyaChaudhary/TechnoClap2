@@ -142,8 +142,8 @@ router.post('/loginuser', (req,res, next)=>{
     console.log(user);
     
     if(user.length === 0){
-      return done(null,false,{message:"No User Found"})
-    }
+      req.flash('success_msg','No use found');      res.redirect('/users/loginuser')
+    } else {
     bcrypt.compare(password,user[0].password,(err,isMatch) => {
       if(err) throw err;
       if(isMatch){
@@ -153,9 +153,10 @@ router.post('/loginuser', (req,res, next)=>{
           username: user[0].username
         })
       } else {
-        return done(null,false,{message:"Password Incorrect"})
+        req.flash('err_msg','Wrong password');
       }
     })
+  }
 })
   
   // passport.authenticate('local',{
