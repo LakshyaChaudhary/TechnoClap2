@@ -1,0 +1,39 @@
+
+{{#if username}}
+<h1>Welcome {{username}} You Are Successfully logged in</h1>
+{{/if}}
+<form method="POST" action="/users/techselect/{{id}}" >
+    <select name="choice" required>
+  <option value="Electrician" name="e">Electrician</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>
+<input type="submit" value="Submit" class="btn btn-dark">
+</form>
+<div class="row">
+  {{#each user}}
+  <div class="col s12 m4">
+    
+     
+     
+        <h5>{{this.field}}</h5>
+        
+        <br>
+          
+            
+             <a href="/technician/person/{{user.id}}"><i class="fa fa-user"></i> {{this.username}}</a>
+          
+      <h6>{{this.contact}}</h6>
+     
+   
+  </div>
+  {{!-- {{else}}
+  <p>No Technician with this field</p> --}}
+  {{/each}}
+</div>
+
+{{!-- <p>{{jsonFormat user}}</p> --}}
+{{!-- {{#each jsonFormat user}}
+<p>{{user.id}}</p>
+{{/each}} --}}
