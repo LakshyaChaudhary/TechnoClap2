@@ -42,7 +42,9 @@ app.use(function(req,res,next) {
 app.get('/',(req,res)=>{
   res.render('index/welcome');
 })
-
+app.get('/about',(req,res)=>{
+  res.render('index/about');
+})
 app.use('/users',users);
 app.use('/technician',technician);
 app.listen('5000',()=>{

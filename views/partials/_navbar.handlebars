@@ -25,7 +25,11 @@
                 </div>
               </li>
               {{/unless}}
-             
+              {{#if payment}}
+               <li class="nav-item">
+               <a href="/users/payment/{{id}}" class="nav-link">Payments</a>
+               
+             {{/if}}
               {{#if id}}
                <li class="nav-item">
                <a href="/users/logout" class="nav-link">Logout</a>

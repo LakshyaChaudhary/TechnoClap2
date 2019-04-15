@@ -68,8 +68,17 @@ router.get('/registertechnician',(req,res)=>{
     }
   }) 
 
-  router.get('/home',(req,res)=>{
-      res.render('home/welcometechnician');
+  router.get('/home/:id/:username',(req,res)=>{
+    db.query(`SELECT * FROM request WHERE (techid=${req.params.id}) and (status not in ('Reject'))`,(err,results)=>{
+      if(err){throw err}
+      console.log(results);
+      res.render('home/welcometechnician',{
+        id:req.params.id,
+        username:req.params.username,
+        results:results
+      });
+    })
+     
   })
 
 
@@ -85,10 +94,11 @@ router.get('/registertechnician',(req,res)=>{
       bcrypt.compare(password,user[0].password,(err,isMatch) => {
         if(err) throw err;
         if(isMatch){
-          res.render('home/welcometechnician',{
-            id: user[0].id,
-            username: user[0].username
-          })
+          // res.render('home/welcometechnician',{
+          //   id: user[0].id,
+          //   username: user[0].username
+          // })
+          res.redirect(`/technician/home/${user[0].id}/${user[0].username}`)
         } else {
           req.flash('success_msg','Incorrect Password');      res.redirect('/technician/logintechnician')
         }
@@ -102,5 +112,71 @@ router.get('/registertechnician',(req,res)=>{
   //     failureFlash: true
   //   })(req,res, next);
   });
- 
+ router.get('/Electrician/:id1/:id2',(req,res)=>{
+   res.render('field/electrician',{
+     userid:req.params.id1,
+     techid:req.params.id2,
+     id:req.params.id1
+   });
+   
+ })
+ router.get('/Mechanic/:id1/:id2',(req,res)=>{
+  res.render('field/mechanic',{
+    userid:req.params.id1,
+    techid:req.params.id2,
+    id:req.params.id1
+  });
+})
+router.get('/Plumber/:id1/:id2',(req,res)=>{
+  res.render('field/plumber',{
+    userid:req.params.id1,
+    techid:req.params.id2,
+    id:req.params.id1
+  });
+})
+router.get('/Carpenter/:id1/:id2',(req,res)=>{
+  res.render('field/carpenter',{
+    userid:req.params.id1,
+    techid:req.params.id2,
+    id:req.params.id1
+  });
+})
+
+router.post('/Electrician/:id1/:id2',(req,res)=>{
+console.log(req.body);
+let amount1;
+if(req.body.field ==='a')
+{
+  amount1=1000;
+} else if(req.body.field ==='b')
+{
+  amount1 = 2000;
+} else if(req.body.field ==='c')
+{
+  amount1 = 3000;
+} else {
+  amount1 = 4000;
+}
+const newRequest =  {
+  userid: req.params.id1,
+  techid: req.params.id2,
+  amount:amount1,
+  task:req.body.field
+}
+db.query('INSERT INTO request SET?',newRequest,(err,result)=>{
+  if(err){throw err}
+  console.log(result);
+  req.flash('success_msg','request sent');
+  res.redirect(`/users/home/${req.params.id1}`);
+})
+
+})
+
+router.post('/requestupdate/:techid/:techname/:reqid',(req,res)=>{
+  db.query(`UPDATE request SET status='${req.body.selection}' WHERE id=${req.params.reqid}`,(err,result)=>{
+    if(err){throw err}
+    console.log(result);
+    res.redirect(`/technician/home/${req.params.techid}/${req.params.techname}`)
+  })
+})
   module.exports = router;

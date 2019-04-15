@@ -1,1 +1,14 @@
-<h1>Welcome {{username}} You Are Successfully logged in</h1>
+<h1>Welcome {{username}} </h1>
+{{#each results}}
+<p>request from {{this.userid}}</p>
+<p>task {{this.task}}</p>
+<p>amount {{this.amount}}</p>
+<form action="/technician/requestupdate/{{../id}}/{{../username}}/{{this.id}}" method="POST">
+    <label for="Accept">Accept</label>
+    <input type="radio" name="selection" value="Accept" id="Accept">
+    <label for="Reject">Reject</label>
+    <input type="radio" name="selection" value="Reject" id="Reject">
+    <input type="submit" value="Select">
+</form>
+
+{{/each}}

@@ -129,12 +129,22 @@ router.post('/registeruser',(req,res)=>{
 // })
 
 router.get('/home/:id',(req,res)=>{
-  res.render('home/welcomeuser',{
-    id:req.params.id
-  });
+  console.log(req.params)
+  db.query(`SELECT * FROM users WHERE id=${req.params.id}`,(err,user)=>{
+    if(err){throw err}
+    res.render('home/welcomeuser',{
+      id:req.params.id,
+      username:user[0].username,
+      payment:true
+    });
+  })
+  // res.render('home/welcomeuser',{
+  //   id:req.params.id,
+  //   username:req.params.username
+  // });
 })
 
-router.post('/loginuser', (req,res, next)=>{
+router.post('/loginuser', (req,res)=>{
   let password = req.body.password;
 
   db.query(`SELECT * FROM users WHERE users.email='${req.body.email}'`,(err,user)=>{
@@ -148,12 +158,14 @@ router.post('/loginuser', (req,res, next)=>{
       if(err) throw err;
       if(isMatch){
         // res.redirect(`/users/home/${user[0].id}`)
-        res.render('home/welcomeuser',{
-          id: user[0].id,
-          username: user[0].username
-        })
+        // res.render('home/welcomeuser',{
+        //   ID: user[0].id,
+        //   username: user[0].username
+        // })
+        res.redirect(`/users/home/${user[0].id}`)
       } else {
-        req.flash('err_msg','Wrong password');
+        req.flash('success_msg','Wrong password');
+        res.redirect('/users/loginuser');
       }
     })
   }
@@ -167,7 +179,7 @@ router.post('/loginuser', (req,res, next)=>{
 });
 router.get('/logout',(req,res)=>{
   req.logout();
-  req.flash('success_msg','You are logged out');
+  // req.flash('success_msg','You are logged out');
   res.redirect('/');
 })
 router.post('/techselect/:id',(req,res)=>{
@@ -182,13 +194,20 @@ router.post('/techselect/:id',(req,res)=>{
     // x=JSON.parse(x);
     // console.log(x);
 
-    
+    console.log(req.params.id)
     
     res.render('home/welcomeuser',{
       user:user,
 
-      id:req.params.id
+       id:req.params.id
     })
+    // res.redirect(`/users/home/${req.params.ID}/${req.params.username}/${user}`)
 })
+})
+router.get('/payment/:id',(req,res)=>{
+  res.render('users/payment',{
+    id:req.params.id,
+    payment:true
+  });
 })
 module.exports = router;
