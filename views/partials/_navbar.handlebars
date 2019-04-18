@@ -30,6 +30,18 @@
                <a href="/users/payment/{{id}}" class="nav-link">Payments</a>
                
              {{/if}}
+             {{#if history}}
+
+              <li class="nav-item">
+               <a href="/users/history/{{id}}" class="nav-link">History</a>
+
+             {{/if}}
+              {{#if historytech}}
+
+              <li class="nav-item">
+               <a href="/technician/history/{{id}}" class="nav-link">History</a>
+
+             {{/if}}
               {{#if id}}
                <li class="nav-item">
                <a href="/users/logout" class="nav-link">Logout</a>

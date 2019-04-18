@@ -69,13 +69,14 @@ router.get('/registertechnician',(req,res)=>{
   }) 
 
   router.get('/home/:id/:username',(req,res)=>{
-    db.query(`SELECT * FROM request WHERE (techid=${req.params.id}) and (status not in ('Reject'))`,(err,results)=>{
+    db.query(`SELECT * FROM request,users WHERE (techid=${req.params.id}) and (status not in ('Reject','Accept')) AND users.id=request.userid`,(err,results)=>{
       if(err){throw err}
       console.log(results);
       res.render('home/welcometechnician',{
         id:req.params.id,
         username:req.params.username,
-        results:results
+        results:results,
+        historytech:true
       });
     })
      
@@ -89,7 +90,7 @@ router.get('/registertechnician',(req,res)=>{
       if(err){throw err;}
       console.log(user);
       if(user.length === 0){
-        req.flash('success_msg','No use found');      res.redirect('/technician/logintechnician')
+        req.flash('error_msg','No use found');      res.redirect('/technician/logintechnician')
       } else {
       bcrypt.compare(password,user[0].password,(err,isMatch) => {
         if(err) throw err;
@@ -100,7 +101,7 @@ router.get('/registertechnician',(req,res)=>{
           // })
           res.redirect(`/technician/home/${user[0].id}/${user[0].username}`)
         } else {
-          req.flash('success_msg','Incorrect Password');      res.redirect('/technician/logintechnician')
+          req.flash('error_msg','Incorrect Password');      res.redirect('/technician/logintechnician')
         }
       })
     }
@@ -172,11 +173,113 @@ db.query('INSERT INTO request SET?',newRequest,(err,result)=>{
 
 })
 
+router.post('/Mechanic/:id1/:id2',(req,res)=>{
+  console.log(req.body);
+  let amount1;
+  if(req.body.field ==='a')
+  {
+    amount1=1000;
+  } else if(req.body.field ==='b')
+  {
+    amount1 = 2000;
+  } else if(req.body.field ==='c')
+  {
+    amount1 = 3000;
+  } else {
+    amount1 = 4000;
+  }
+  const newRequest =  {
+    userid: req.params.id1,
+    techid: req.params.id2,
+    amount:amount1,
+    task:req.body.field
+  }
+  db.query('INSERT INTO request SET?',newRequest,(err,result)=>{
+    if(err){throw err}
+    console.log(result);
+    req.flash('success_msg','request sent');
+    res.redirect(`/users/home/${req.params.id1}`);
+  })
+  
+  })
+
+  router.post('/Plumber/:id1/:id2',(req,res)=>{
+    console.log(req.body);
+    let amount1;
+    if(req.body.field ==='a')
+    {
+      amount1=1000;
+    } else if(req.body.field ==='b')
+    {
+      amount1 = 2000;
+    } else if(req.body.field ==='c')
+    {
+      amount1 = 3000;
+    } else {
+      amount1 = 4000;
+    }
+    const newRequest =  {
+      userid: req.params.id1,
+      techid: req.params.id2,
+      amount:amount1,
+      task:req.body.field
+    }
+    db.query('INSERT INTO request SET?',newRequest,(err,result)=>{
+      if(err){throw err}
+      console.log(result);
+      req.flash('success_msg','request sent');
+      res.redirect(`/users/home/${req.params.id1}`);
+    })
+    
+    })
+
+    router.post('/Carpenter/:id1/:id2',(req,res)=>{
+      console.log(req.body);
+      let amount1;
+      if(req.body.field ==='a')
+      {
+        amount1=1000;
+      } else if(req.body.field ==='b')
+      {
+        amount1 = 2000;
+      } else if(req.body.field ==='c')
+      {
+        amount1 = 3000;
+      } else {
+        amount1 = 4000;
+      }
+      const newRequest =  {
+        userid: req.params.id1,
+        techid: req.params.id2,
+        amount:amount1,
+        task:req.body.field
+      }
+      db.query('INSERT INTO request SET?',newRequest,(err,result)=>{
+        if(err){throw err}
+        console.log(result);
+        req.flash('success_msg','request sent');
+        res.redirect(`/users/home/${req.params.id1}`);
+      })
+      
+      })
+
 router.post('/requestupdate/:techid/:techname/:reqid',(req,res)=>{
-  db.query(`UPDATE request SET status='${req.body.selection}' WHERE id=${req.params.reqid}`,(err,result)=>{
+  db.query(`UPDATE request SET status='${req.body.selection}' WHERE requestid=${req.params.reqid}`,(err,result)=>{
     if(err){throw err}
     console.log(result);
     res.redirect(`/technician/home/${req.params.techid}/${req.params.techname}`)
+  })
+})
+
+router.get('/history/:id',(req,res)=>{
+  db.query(`SELECT * FROM Payment,users WHERE techid=${req.params.id} and userid=users.id`,(err,results)=>{
+    if(err){throw err}
+    console.log(results);
+    res.render('users/history',{
+      results:results,
+      id:req.params.id,
+      historytech:true
+    })
   })
 })
   module.exports = router;

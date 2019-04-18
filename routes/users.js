@@ -135,7 +135,8 @@ router.get('/home/:id',(req,res)=>{
     res.render('home/welcomeuser',{
       id:req.params.id,
       username:user[0].username,
-      payment:true
+      payment:true,
+      history:true
     });
   })
   // res.render('home/welcomeuser',{
@@ -152,7 +153,7 @@ router.post('/loginuser', (req,res)=>{
     console.log(user);
     
     if(user.length === 0){
-      req.flash('success_msg','No use found');      res.redirect('/users/loginuser')
+      req.flash('error_msg','No use found');      res.redirect('/users/loginuser')
     } else {
     bcrypt.compare(password,user[0].password,(err,isMatch) => {
       if(err) throw err;
@@ -164,7 +165,7 @@ router.post('/loginuser', (req,res)=>{
         // })
         res.redirect(`/users/home/${user[0].id}`)
       } else {
-        req.flash('success_msg','Wrong password');
+        req.flash('error_msg','Wrong password');
         res.redirect('/users/loginuser');
       }
     })
@@ -198,6 +199,7 @@ router.post('/techselect/:id',(req,res)=>{
     
     res.render('home/welcomeuser',{
       user:user,
+      history:true,
 
        id:req.params.id
     })
@@ -205,9 +207,73 @@ router.post('/techselect/:id',(req,res)=>{
 })
 })
 router.get('/payment/:id',(req,res)=>{
-  res.render('users/payment',{
-    id:req.params.id,
-    payment:true
+  db.query(`SELECT * FROM request,technicians WHERE userid=${req.params.id} AND status='Accept' AND paymentStatus='no' AND request.techid=technicians.id`,(err,result)=>{
+    if(err){throw err}
+    console.log(result);
+    res.render('users/payment',{
+      id:req.params.id,
+      payment:true,
+      results:result,
+      history:true
+    });
+  })
+  // db.query(`SELECT * FROM request,technicians `,(err,result)=>{
+  //   if(err){throw err}
+  //   console.log(result);
+  //   res.render('users/payment',{
+  //     id:req.params.id,
+  //     payment:true,
+  //     results:result
+  //   });
+  // })
+ 
+})
+
+router.get('/paymentpage/:userid/:reqid',(req,res)=>{
+  res.render('users/paymentpage',{
+    id:true,
+    reqid:req.params.reqid,
+    userid:req.params.userid,
+    history:true
   });
 })
+
+router.post('/paymentupdate/:userid/:reqid',(req,res)=>{
+  db.query(`UPDATE request SET paymentStatus='yes' WHERE requestid=${req.params.reqid}`,(err,result)=>{
+    if(err){throw err}
+    console.log(result);
+    db.query(`SELECT amount,techid FROM request WHERE requestid=${req.params.reqid}`,(err,result)=>{
+      if(err){throw err}
+      console.log(result);
+      let newPayment = {
+        techid: result[0].techid,
+        amount: result[0].amount,
+        userid: req.params.userid
+      }
+      db.query('INSERT INTO Payment SET?',newPayment,(err,result)=>{
+        if(err){throw err}
+        console.log(result);
+        req.flash('success_msg','Payment Successful');
+        // res.redirect(`/users/home/${req.params.userid}`);
+      })
+
+    })
+    req.flash('success_msg','Payment Successful'); res.redirect(`/users/home/${req.params.userid}`)
+  })
+  
+})
+
+router.get('/history/:id',(req,res)=>{
+  db.query(`SELECT * FROM Payment,technicians WHERE userid=${req.params.id} and techid=technicians.id`,(err,results)=>{
+    if(err){throw err}
+    console.log(results);
+    res.render('users/history',{
+      results:results,
+      id:true,
+      payment:true,
+      history:true
+    })
+  })
+})
+
 module.exports = router;

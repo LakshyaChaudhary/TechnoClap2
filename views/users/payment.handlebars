@@ -1,1 +1,15 @@
 <h1>Payment Portal</h1>
+{{#each results}}
+
+<p>{{this.field}}</p>
+<p>Technician name: {{this.username}}</p>
+<p>Task :{{this.task}}</p>
+<p>Amount</p>
+<input type="number" name="" value="{{this.amount}}" id="">
+{{!-- <form action="/users/paymentpage/{{this.requestid}}" method="GET">
+    <input type="tel" name="price" id="price" value="{{this.amount}}">
+    <input type="submit" class="btn btn-dark" value="Pay">
+</form> --}}
+<a href="/users/paymentpage/{{this.userid}}/{{this.requestid}}" class="btn btn-dark">PAY</a>
+
+{{/each}}
