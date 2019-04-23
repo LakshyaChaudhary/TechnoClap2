@@ -7,9 +7,23 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+              {{#unless id}}
               <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
               </li>
+              {{/unless}}
+              {{#if id}}
+              {{#if isuser}}
+              <li class="nav-item">
+                <a class="nav-link" href="/users/home/{{id}}">Home</a>
+              </li>
+              {{/if}}
+              {{#if technician}}
+              <li class="nav-item">
+                <a class="nav-link" href="/technician/home/{{id}}/{{username}}">Home</a>
+              </li>
+              {{/if}}
+              {{/if}}
               <li class="nav-item">
                 <a class="nav-link" href="/about">About</a>
               </li>
@@ -39,14 +53,14 @@
               {{#if historytech}}
 
               <li class="nav-item">
-               <a href="/technician/history/{{id}}" class="nav-link">History</a>
+               <a href="/technician/history/{{id}}/{{username}}" class="nav-link">History</a>
 
              {{/if}}
               {{#if id}}
                <li class="nav-item">
                <a href="/users/logout" class="nav-link">Logout</a>
               {{/if}}     
-                     
+               {{#unless id}}      
               <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink">Register</a>
                 <div class="dropdown-menu">
@@ -54,6 +68,7 @@
                   <a href="/users/registertechnician" class="dropdown-item">As Technician</a>
                 </div>
               </li>
+              {{/unless}}
               
             </ul>
           </div>

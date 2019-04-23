@@ -73,6 +73,7 @@ router.get('/registertechnician',(req,res)=>{
       if(err){throw err}
       console.log(results);
       res.render('home/welcometechnician',{
+        technician:true,
         id:req.params.id,
         username:req.params.username,
         results:results,
@@ -271,14 +272,16 @@ router.post('/requestupdate/:techid/:techname/:reqid',(req,res)=>{
   })
 })
 
-router.get('/history/:id',(req,res)=>{
-  db.query(`SELECT * FROM Payment,users WHERE techid=${req.params.id} and userid=users.id`,(err,results)=>{
+router.get('/history/:id/:username',(req,res)=>{
+  db.query(`SELECT * FROM Payment,users WHERE techid=${req.params.id} and userid=users.id `,(err,results)=>{
     if(err){throw err}
     console.log(results);
     res.render('users/history',{
       results:results,
       id:req.params.id,
-      historytech:true
+      historytech:true,
+      technician:true,
+      username: req.params.username
     })
   })
 })

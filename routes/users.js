@@ -136,7 +136,8 @@ router.get('/home/:id',(req,res)=>{
       id:req.params.id,
       username:user[0].username,
       payment:true,
-      history:true
+      history:true,
+      isuser:true,
     });
   })
   // res.render('home/welcomeuser',{
@@ -201,7 +202,8 @@ router.post('/techselect/:id',(req,res)=>{
       user:user,
       history:true,
 
-       id:req.params.id
+       id:req.params.id,
+       isuser: true,
     })
     // res.redirect(`/users/home/${req.params.ID}/${req.params.username}/${user}`)
 })
@@ -214,7 +216,8 @@ router.get('/payment/:id',(req,res)=>{
       id:req.params.id,
       payment:true,
       results:result,
-      history:true
+      history:true,
+      isuser:true
     });
   })
   // db.query(`SELECT * FROM request,technicians `,(err,result)=>{
@@ -234,7 +237,8 @@ router.get('/paymentpage/:userid/:reqid',(req,res)=>{
     id:true,
     reqid:req.params.reqid,
     userid:req.params.userid,
-    history:true
+    history:true,
+    isuser:true
   });
 })
 
@@ -271,7 +275,8 @@ router.get('/history/:id',(req,res)=>{
       results:results,
       id:true,
       payment:true,
-      history:true
+      history:true,
+      isuser:true
     })
   })
 })
